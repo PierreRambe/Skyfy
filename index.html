@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f6f2" />
+  <meta name="description" content="Skyfy Drone Studio untuk merancang, menyimpan, dan membagikan konsep pertunjukan drone." />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <title>Skyfy | Studio Pertunjukan Drone</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/skyfy-favicon.svg" />
+  <script src="./studio-theme.js"></script>
+  <link rel="stylesheet" href="./studio.css" />
+  <script src="./studio.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#studio-main">Lewati ke editor</a>
+  <header class="studio-header">
+    <a class="studio-wordmark" href="../index.html" aria-label="Kembali ke website Skyfy">SKYFY<span>.</span></a>
+    <div class="project-identity">
+      <div class="project-copy">
+        <label for="project-name">Nama proyek</label>
+        <input id="project-name" value="Konsep Langit 01" maxlength="48" data-project-name />
+      </div>
+    </div>
+    <div class="header-actions">
+      <p class="save-state" role="status" data-save-state>Belum disimpan</p>
+      <button class="theme-button" type="button" data-theme-toggle aria-label="Aktifkan mode gelap"><span data-theme-label>Mode gelap</span></button>
+      <button class="text-button" type="button" data-open-project>Buka proyek</button>
+      <input class="visually-hidden" type="file" accept=".json,application/json" data-project-file aria-label="Pilih file proyek Skyfy" tabindex="-1" />
+      <button class="text-button" type="button" data-save>Simpan proyek</button>
+      <a class="primary-button compact" data-consult href="https://wa.me/6282199988399" target="_blank" rel="noopener noreferrer">Konsultasi desain</a>
+    </div>
+  </header>
+
+  <main class="studio-shell" id="studio-main">
+    <div class="feature-dock" data-feature-dock>
+      <button type="button" class="feature-trigger" data-feature-toggle aria-controls="feature-panel" aria-expanded="false">Fitur</button>
+    <aside class="control-panel" id="feature-panel" aria-label="Pengaturan desain" inert>
+      <div class="panel-heading">
+        <div><span class="eyebrow">Skyfy Studio</span><h1>Pengaturan desain</h1><p class="panel-intro">Susun formasi dan lihat hasilnya di kanvas.</p></div>
+        <span class="status-badge">Studio</span>
+      </div>
+
+      <section class="control-section ai-section" aria-labelledby="ai-title" hidden>
+        <div class="section-title-row"><h2 id="ai-title">Desain dengan AI</h2><span>Pratinjau saja</span></div>
+        <p class="ai-help">Ceritakan bentuk, warna, dan suasana pertunjukan. AI membuat gambar konsep untuk dibahas bersama tim Skyfy.</p>
+        <form data-ai-form>
+          <label for="ai-prompt">Ide desain</label>
+          <textarea id="ai-prompt" data-ai-prompt maxlength="500" minlength="10" rows="4" required placeholder="Contoh: formasi burung bercahaya biru yang berubah menjadi logo acara di langit malam"></textarea>
+          <div class="ai-form-actions"><button class="primary-button" type="submit" data-ai-generate disabled>Buat pratinjau AI</button><small>Hasil AI tidak dapat disimpan sebagai proyek.</small></div>
+        </form>
+        <p class="ai-status" role="status" data-ai-status>Fitur AI sementara dinonaktifkan.</p>
+      </section>
+
+      <section class="control-section" aria-labelledby="import-title">
+        <div class="section-title-row"><h2 id="import-title">Impor koordinat</h2><span>CSV atau JSON</span></div>
+        <label class="workspace-field">Tujuan impor
+          <select data-import-placement><option value="new">Desain baru — mulai 00:00</option><option value="append">Tambah scene ke proyek ini</option></select>
+        </label>
+        <p class="reference-help">Desain baru memakai durasi dan urutan frame dari file. Tambah scene menyambungkannya setelah scene terakhir.</p>
+        <label class="file-drop" for="design-file">
+          <input id="design-file" type="file" accept=".csv,.json,application/json,text/csv" data-file-input />
+          <span><strong>Buka desain atau animasi</strong><small data-file-label>CSV / JSON, maks. 10 MB; animasi hingga 1.000 drone/frame</small></span>
+        </label>
+      </section>
+
+      <section class="control-section" aria-labelledby="reference-title">
+        <div class="section-title-row"><h2 id="reference-title">Gambar referensi</h2><span data-reference-count>0 / 5 layer</span></div>
+        <p class="reference-help">Tambahkan gambar panduan per scene. Gambar mengikuti arah kamera di belakang titik drone dan tidak mengubah koordinatnya.</p>
+        <label class="file-drop" for="reference-file">
+          <input id="reference-file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" multiple data-reference-input />
+          <span><strong>Tambah gambar</strong><small>PNG, JPG, atau WebP · maks. 5 MB per file</small></span>
+        </label>
+        <div class="reference-list" data-reference-list aria-label="Layer gambar referensi"></div>
+        <div class="reference-controls" data-reference-controls hidden>
+          <label class="workspace-field">Transparansi <output data-reference-opacity-output>50%</output>
+            <input type="range" min="10" max="100" step="5" value="50" data-reference-opacity />
+          </label>
+          <label class="workspace-field">Ukuran <output data-reference-scale-output>100%</output>
+            <input type="range" min="25" max="200" step="5" value="100" data-reference-scale />
+          </label>
+          <div class="reference-actions"><button type="button" data-reference-move aria-pressed="false">Geser di kanvas</button><button type="button" data-reference-up>Naikkan layer</button><button type="button" data-reference-remove>Hapus</button></div>
+        </div>
+      </section>
+
+      <section class="control-section drone-library" aria-labelledby="library-title">
+        <div class="section-title-row"><h2 id="library-title">Tambahkan drone</h2><output data-placed-count>0 ditempatkan</output></div>
+        <p class="library-help">Klik pola untuk menambahkannya ke kanvas. Anda juga dapat menyeretnya.</p>
+        <div class="drone-palette" aria-label="Elemen drone yang dapat ditarik">
+          <button type="button" draggable="true" data-drone-template="single"><span><strong>Drone tunggal</strong><small>1 drone</small></span></button>
+          <button type="button" draggable="true" data-drone-template="row"><span><strong>Baris</strong><small>8 drone</small></span></button>
+          <button type="button" draggable="true" data-drone-template="grid"><span><strong>Grid</strong><small>25 drone</small></span></button>
+          <button type="button" draggable="true" data-drone-template="ring"><span><strong>Lingkaran</strong><small>32 drone</small></span></button>
+        </div>
+        <div class="keyboard-hint"><span><kbd>Ctrl</kbd> + <kbd>A</kbd> pilih semua</span><span><kbd>Ctrl</kbd> + <kbd>C</kbd> salin</span><span><kbd>Ctrl</kbd> + <kbd>V</kbd> tempel</span><span><kbd>Del</kbd> hapus</span></div>
+      </section>
+
+      <section class="control-section" aria-labelledby="template-title">
+        <div class="section-title-row"><h2 id="template-title">Formasi awal</h2><button class="reset-button" type="button" data-reset>Atur ulang</button></div>
+        <div class="formation-grid" role="group" aria-label="Pilih formasi">
+          <button class="formation-card active" type="button" data-formation="orbit" aria-pressed="true">Orbit</button>
+          <button class="formation-card" type="button" data-formation="wave" aria-pressed="false">Gelombang</button>
+          <button class="formation-card" type="button" data-formation="mark" aria-pressed="false">Sky mark</button>
+          <button class="formation-card" type="button" data-formation="free" aria-pressed="false">Dari nol</button>
+        </div>
+      </section>
+
+      <section class="control-section" aria-labelledby="drone-title">
+        <div class="section-title-row"><h2 id="drone-title">Jumlah drone</h2><output class="number-output" for="drone-count" data-drone-output>300</output></div>
+        <input class="range" id="drone-count" type="range" min="50" max="1000" step="10" value="300" data-drone-count />
+        <div class="range-labels"><span>50</span><span>1.000</span></div>
+      </section>
+
+      <section class="control-section" aria-labelledby="color-title">
+        <div class="section-title-row"><h2 id="color-title">Warna cahaya</h2><label class="toggle-label"><input type="checkbox" checked data-gradient-toggle /><span>Gradasi</span></label></div>
+        <p class="reference-help" data-color-scope>Warna untuk formasi pada scene aktif.</p>
+        <div class="color-controls">
+          <label>Warna awal<span><input type="color" value="#b9f43c" data-color-start /><b data-color-start-label>#B9F43C</b></span></label>
+          <label>Warna akhir<span><input type="color" value="#52c7ff" data-color-end /><b data-color-end-label>#52C7FF</b></span></label>
+        </div>
+        <button class="reset-button" type="button" data-restore-file-colors hidden>Pulihkan warna dari file</button>
+      </section>
+
+      <section class="control-section" aria-labelledby="workspace-title">
+        <div class="section-title-row"><h2 id="workspace-title">Workspace</h2></div>
+        <label class="workspace-check"><input type="checkbox" checked data-ground-toggle />Tampilkan ground mesh</label>
+        <label class="workspace-field">Ukuran tampilan <output data-marker-size-output>100%</output>
+          <input type="range" min="70" max="180" step="10" value="100" data-marker-size />
+        </label>
+        <label class="workspace-field">Lebar area kerja manual baru (m)
+          <input type="number" min="5" max="200" step="1" value="40" data-workspace-width />
+        </label>
+        <div class="drone-inspector" data-drone-inspector hidden>
+          <strong data-inspector-title>Drone terpilih</strong>
+          <p>Atur posisi pada kanvas dalam persen dan warna drone.</p>
+          <div class="inspector-fields">
+            <label>X (%)<input type="number" min="0" max="100" step="0.1" data-inspector-x /></label>
+            <label>Y (%)<input type="number" min="0" max="100" step="0.1" data-inspector-y /></label>
+            <label>Z<input type="number" min="-1000000" max="1000000" step="0.1" data-inspector-z /></label>
+            <label>Warna<input type="color" data-inspector-color /></label>
+          </div>
+        </div>
+        <p class="workspace-help" data-workspace-help>Pilih drone pada kanvas untuk mengubah posisinya.</p>
+        <p class="workspace-help">Seret area kosong untuk memilih beberapa drone. Ctrl+A memilih semua drone pada scene aktif.</p>
+        <p class="workspace-help">Putar kamera: seret dengan tombol tengah mouse, Alt + seret, atau aktifkan Putar ruang untuk sentuhan. Geser: tombol kanan atau Shift + seret. Zoom: roda mouse.</p>
+        <p class="workspace-help" data-spacing-status>Jarak ke drone terdekat: —</p>
+      </section>
+
+      <div class="scene-panel">
+        <div class="scene-heading"><div><span class="eyebrow">Urutan</span><h2>Scene pertunjukan</h2></div><button class="add-scene" type="button" data-add-scene>Tambah scene</button></div>
+        <p class="scene-playback-help">Uji animasi memutar scene 1 hingga terakhir. Putar melanjutkan dari posisi timeline.</p>
+        <div class="scene-track" data-scene-track>
+          <button class="scene-card active" type="button" data-scene="0" aria-pressed="true"><span class="scene-index">01</span><span><strong>Orbit</strong><small>4 detik</small></span></button>
+          <button class="scene-card" type="button" data-scene="1" aria-pressed="false"><span class="scene-index">02</span><span><strong>Transisi</strong><small>3 detik</small></span></button>
+          <button class="scene-card" type="button" data-scene="2" aria-pressed="false"><span class="scene-index">03</span><span><strong>Sky mark</strong><small>5 detik</small></span></button>
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <p><strong>Proyek lokal.</strong> Simpan file proyek untuk melanjutkan pekerjaan di perangkat lain. Jangan masukkan data rahasia ke perangkat bersama.</p>
+      </div>
+    </aside>
+    </div>
+
+    <section class="preview-panel" aria-label="Preview formasi drone">
+      <div class="preview-topbar">
+        <div><span class="live-indicator">Kanvas</span><div class="scene-title"><strong data-scene-name>Scene 01 — Orbit</strong><span data-motion-origin>Animasi formasi Studio</span></div></div>
+        <div class="view-actions" role="group" aria-label="Pengaturan tampilan">
+          <button type="button" class="test-run-button" data-run-test>Uji animasi</button>
+          <button type="button" class="active" data-view="perspective">Perspektif</button>
+          <button type="button" data-view="front">Depan</button>
+          <button type="button" data-orbit-tool aria-pressed="false">Putar ruang</button>
+          <button type="button" data-reset-camera>Reset kamera</button>
+          <button type="button" data-fullscreen>Layar penuh</button>
+          <button type="button" data-shortcut-help aria-haspopup="dialog">Shortcut</button>
+        </div>
+      </div>
+      <div class="sky-stage" data-sky-stage>
+        <canvas data-drone-canvas tabindex="0" aria-label="Workspace desain formasi drone"></canvas>
+        <div class="ai-preview" data-ai-preview hidden>
+          <img data-ai-image alt="Gambar konsep drone show yang dibuat AI" draggable="false" />
+          <div class="ai-watermark" aria-hidden="true">PREVIEW SKYFY · KONSEP AI · PREVIEW SKYFY</div>
+          <div class="ai-preview-bar"><strong>Konsep AI · pratinjau saja</strong><div><button type="button" data-ai-consult>Konsultasikan konsep</button><button type="button" data-ai-close>Tutup pratinjau</button></div></div>
+        </div>
+        <div class="stage-metrics" aria-hidden="true">
+          <span><small>Drone</small><strong data-stage-drone-count>300</strong></span>
+          <span><small>Durasi</small><strong data-stage-duration>12s</strong></span>
+          <span><small>Scene</small><strong data-stage-scenes>03</strong></span>
+        </div>
+        <div class="workspace-toolbar" aria-label="Alat edit drone">
+          <button type="button" data-reference-toggle disabled>Referensi: tidak ada</button>
+          <button type="button" data-select-all>Pilih semua</button>
+          <button type="button" data-copy-drone aria-label="Salin drone terpilih">Salin</button>
+          <button type="button" data-paste-drone aria-label="Tempel drone">Tempel</button>
+          <button type="button" data-delete-drone aria-label="Hapus drone terpilih">Hapus</button>
+        </div>
+        <div class="selection-status" data-selection-status role="status" hidden></div>
+        <div class="canvas-hint" data-canvas-hint hidden>Klik pada langit untuk menambah titik arah.</div>
+        <div class="stage-note"><p>Visualisasi konsep. Rencana penerbangan memerlukan verifikasi tim Skyfy.</p></div>
+      </div>
+      <div class="playback-panel">
+        <button class="play-button" type="button" aria-label="Putar preview" data-play><span data-play-icon>Putar</span></button>
+        <span class="timecode" data-current-time>00:00.000</span>
+        <input class="timeline-range" type="range" min="0" max="100" step="0.001" value="0" aria-label="Posisi waktu seluruh scene" data-time-range />
+        <span class="timecode" data-duration>00:12.000</span>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="shortcut-dialog" data-shortcut-dialog aria-labelledby="shortcut-title" aria-describedby="shortcut-description">
+    <div class="shortcut-heading"><h2 id="shortcut-title">Shortcut Studio</h2><button type="button" data-shortcut-close autofocus>Tutup</button></div>
+    <p id="shortcut-description">Klik kanvas atau fokuskan workspace dengan Tab untuk memakai shortcut. Shortcut tidak aktif saat mengisi kolom atau membuka dialog. Ctrl dapat diganti Cmd pada Mac.</p>
+    <div class="shortcut-list" data-shortcut-list></div>
+    <p class="shortcut-footnote">Mouse: tombol tengah atau Alt + seret untuk putar kamera; tombol kanan atau Shift + seret untuk geser; roda mouse untuk zoom. Esc menutup panduan ini.</p>
+  </dialog>
+
+  <dialog class="consult-dialog" data-consult-dialog>
+    <form method="dialog">
+      <button class="dialog-close" type="button" data-close-consult>Tutup</button>
+      <span class="eyebrow">KONSULTASI DESAIN</span><h2>Bawa konsep ini<br />ke tahap berikutnya.</h2>
+      <p data-consult-copy>Chat WhatsApp Skyfy sudah dibuka dengan ringkasan desain. Lampirkan file proyek <strong data-consult-filename></strong> yang diunduh, lalu periksa dan kirim pesan.</p>
+      <p data-consult-ai-copy hidden>Chat WhatsApp Skyfy sudah dibuka dengan ringkasan ide. Periksa dan kirim pesan jika ingin berkonsultasi.</p>
+      <div class="dialog-summary"><span data-dialog-drones>300 drone</span><span data-dialog-scenes>3 scene</span><span data-dialog-duration>12 detik</span></div>
+      <button type="button" data-consult-download>Unduh file desain lagi</button>
+      <a class="primary-button dialog-submit" data-submit-consult href="https://wa.me/6282199988399" target="_blank" rel="noopener noreferrer">Buka WhatsApp lagi</a>
+      <small>File belum bisa dilampirkan otomatis melalui tautan WhatsApp. Anda menentukan kapan pesan dikirim.</small>
+    </form>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+</body>
+</html>
