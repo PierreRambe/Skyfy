@@ -477,11 +477,11 @@ function formationPoint(type, index, total, width, height, time) {
         u0: u, v0: v, w0: w
       });
     }
-    const minDistUVW = 1.62 / scaleW;
+    const minDistUVW = .024;
     const minDistSq = minDistUVW * minDistUVW;
-    for (let iter = 0; iter < 48; iter += 1) {
+    for (let iter = 0; iter < 24; iter += 1) {
       let maxOverlap = 0;
-      const pushFactor = iter < 30 ? .48 : .54;
+      const pushFactor = .34;
       for (let i = 0; i < n; i += 1) {
         const p1 = raw[i];
         for (let j = i + 1; j < n; j += 1) {
@@ -3609,19 +3609,21 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
 
   // 5. Dua Pilar Spiral Double-Helix / Candy Cane 3D di Kiri & Kanan (helix_flow)
   const addCandyHelixColumns3D = (nSteps, v0, v1, uBase, uTaper, radU, colA, colB, colRung = '#ffd15e') => {
+    const cleanBase = Math.max(.74, uBase);
+    const cleanRad = Math.min(.048, radU);
     for (const side of [-1, 1]) {
       for (let i = 0; i < nSteps; i += 1) {
         const t = i / Math.max(1, nSteps - 1);
         const v = v0 + t * (v1 - v0);
-        const axisU = side * (uBase - t * uTaper);
-        const theta = t * Math.PI * 3.4 + (side < 0 ? 0 : Math.PI * .5);
-        const uA = axisU + Math.sin(theta) * radU;
-        const wA = Math.cos(theta) * .20;
-        push(uA, v, wA, colA, 'helix_flow', { lu: uA, lv: v, lw: wA, spinOU: axisU, spinR: radU, spinA: theta });
+        const axisU = side * (cleanBase - t * Math.min(.06, uTaper));
+        const theta = t * Math.PI * 3.0 + (side < 0 ? 0 : Math.PI * .5);
+        const uA = axisU + Math.sin(theta) * cleanRad;
+        const wA = Math.cos(theta) * .09;
+        push(uA, v, wA, colA, 'helix_flow', { lu: uA, lv: v, lw: wA, spinOU: axisU, spinR: cleanRad, spinA: theta });
         const thB = theta + Math.PI;
-        const uB = axisU + Math.sin(thB) * radU;
-        const wB = Math.cos(thB) * .20;
-        push(uB, v, wB, colB, 'helix_flow', { lu: uB, lv: v, lw: wB, spinOU: axisU, spinR: radU, spinA: thB });
+        const uB = axisU + Math.sin(thB) * cleanRad;
+        const wB = Math.cos(thB) * .09;
+        push(uB, v, wB, colB, 'helix_flow', { lu: uB, lv: v, lw: wB, spinOU: axisU, spinR: cleanRad, spinA: thB });
         if (i % 3 === 1) {
           push(axisU, v, 0, colRung, 'helix_flow', { lu: axisU, lv: v, lw: 0, spinOU: axisU, spinR: 0, spinA: theta });
         }
@@ -3671,10 +3673,9 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
       return { u: u * scale, v: v * scale };
     };
     const shells = [
-      { scale: 1.00, w: 0, n: 54, c: '#ffd15e' },
-      { scale: .86, w: .16, n: 44, c: '#b9f43c' },
-      { scale: .86, w: -.16, n: 44, c: '#38bdf8' },
-      { scale: .68, w: .26, n: 34, c: '#52c7ff' }
+      { scale: 1.00, w: 0, n: 64, c: '#ffd15e' },
+      { scale: .84, w: .14, n: 52, c: '#52c7ff' },
+      { scale: .84, w: -.14, n: 40, c: '#38bdf8' }
     ];
     for (const sh of shells) {
       for (let i = 0; i < sh.n; i += 1) {
@@ -3683,25 +3684,25 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
       }
     }
     // Upper-Right Neon White 3D Glass Glare along the right shield bevel
-    for (let i = 0; i < 14; i += 1) {
-      const p = shieldPoint(.18 + (i / 13) * .16, .76);
-      push(p.u, p.v, .28, '#ffffff');
+    for (let i = 0; i < 12; i += 1) {
+      const p = shieldPoint(.18 + (i / 11) * .16, .84);
+      push(p.u, p.v, .22, '#ffffff');
     }
-    // 3D "S" Monogram inside the shield (front and back relief, depth_swing)
-    for (const wLayer of [.34, -.26]) {
-      for (let i = 0; i < 34; i += 1) {
-        const t = i / 33;
+    // Crisp 3D "S" Monogram inside the shield (depth_swing)
+    for (const [wLayer, col] of [[.26, '#ffffff'], [-.16, '#b9f43c']]) {
+      for (let i = 0; i < 38; i += 1) {
+        const t = i / 37;
         let u = 0, v = 0;
         if (t <= .5) {
-          const a = (.18 + (t / .5) * 1.32) * Math.PI;
-          u = Math.cos(a) * .15;
-          v = .10 + Math.sin(a) * .125;
+          const a = (.22 + (t / .5) * 1.28) * Math.PI;
+          u = Math.cos(a) * .165;
+          v = .105 + Math.sin(a) * .125;
         } else {
-          const a = (.5 - ((t - .5) / .5) * 1.32) * Math.PI;
-          u = Math.cos(a) * .15;
-          v = -.15 + Math.sin(a) * .125;
+          const a = (.5 - ((t - .5) / .5) * 1.28) * Math.PI;
+          u = Math.cos(a) * .165;
+          v = -.145 + Math.sin(a) * .125;
         }
-        push(u, v, wLayer, '#ffffff', 'depth_swing', { lu: u, lv: v, lw: wLayer, spinOU: 0, hingeV: .32, spinA: 0 });
+        push(u, v, wLayer, col, 'depth_swing', { lu: u, lv: v, lw: wLayer, spinOU: 0, hingeV: .32, spinA: 0 });
       }
     }
     // 3D 5-Pointed Crown Star emblem above shield
@@ -3714,11 +3715,11 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
       const p1 = starVerts[k], p2 = starVerts[(k + 1) % 10];
       for (let s = 0; s < 3; s += 1) {
         const t = s / 3;
-        push(p1.u + (p2.u - p1.u) * t, p1.v + (p2.v - p1.v) * t, (s % 2 === 0 ? .08 : -.06), '#ffd15e');
+        push(p1.u + (p2.u - p1.u) * t, p1.v + (p2.v - p1.v) * t, (s % 2 === 0 ? .06 : -.05), '#ffd15e');
       }
     }
-    addCandyHelixColumns3D(16, -.62, .48, .72, .08, .08, '#52c7ff', '#b9f43c', '#ffd15e');
-    addCornerFireworks3D('#ffd15e', '#52c7ff', .11);
+    addCandyHelixColumns3D(14, -.58, .44, .75, .05, .048, '#52c7ff', '#b9f43c', '#ffd15e');
+    addCornerFireworks3D('#ffd15e', '#52c7ff', .105);
   } else if (shapeId === 'brand_trophy') {
     // 3D Trophy Cup (with Neon White Glass Glare) + Pedestal + 2 Symmetrical 3D Handles + 3D Victory Star + 2 Helix Columns + 4 Corner Fireworks
     addStructuredLathe3D(64, 0, -.80, -.52, 0, t => .38 - t * .12, 3, 6, () => '#52c7ff');
@@ -3863,31 +3864,31 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
     // 3D Bride & Groom + Bouquet + Golden Arch + 3D Glossy Heart Ornament (depth_swing + White Glare) + 4 Corner Fireworks
     // Groom (cu = -0.22, cw = -0.03)
     for (const legOffset of [-.06, .06]) {
-      addStructuredLathe3D(20, -.22 + legOffset, -.72, -.26, -.03, () => .044, 3, 4, () => '#38bdf8');
+      addStructuredLathe3D(16, -.22 + legOffset, -.72, -.26, -.03, () => .044, 3, 4, () => '#38bdf8');
     }
-    addStructuredLathe3D(42, -.22, -.26, .16, -.03, t => .125 + .02 * Math.cos(t * Math.PI), 4, 5, (t, a) => {
+    addStructuredLathe3D(32, -.22, -.26, .16, -.03, t => .125 + .02 * Math.cos(t * Math.PI), 4, 4, (t, a) => {
       const isFront = Math.sin(a) > .35 && Math.abs(Math.cos(a)) < .45;
       return t > .45 && isFront ? (t > .82 ? '#ffd15e' : '#ffffff') : '#60a5fa';
     });
     for (const armDir of [-1, 1]) {
-      addStructuredLathe3D(14, -.22 + armDir * .16, -.16, .14, -.03, () => .038, 3, 3, () => '#38bdf8');
+      addStructuredLathe3D(12, -.22 + armDir * .16, -.16, .14, -.03, () => .038, 3, 3, () => '#38bdf8');
     }
-    addFilledGlassSphere3D(24, -.22, .30, -.03, .09, '#ffe5aa', '#ffe5aa', '#93c5fd', false);
+    addFilledGlassSphere3D(20, -.22, .30, -.03, .09, '#ffe5aa', '#ffe5aa', '#93c5fd', false);
 
     // Bride (cu = .20, cw = .03): Voluminous 3D Bell Ballgown with Neon White Glare Highlight
-    addStructuredLathe3D(108, .20, -.72, -.06, .03, t => .36 * Math.pow(1 - t * .70, .90), 6, 7, t => {
-      return (Math.floor(t * 6) % 2 === 0) ? '#ffffff' : '#fbcfe8';
+    addStructuredLathe3D(72, .20, -.72, -.06, .03, t => .36 * Math.pow(1 - t * .70, .90), 5, 6, t => {
+      return (Math.floor(t * 5) % 2 === 0) ? '#ffffff' : '#fbcfe8';
     });
-    for (let i = 0; i < 12; i += 1) {
-      const f = i / 11;
+    for (let i = 0; i < 10; i += 1) {
+      const f = i / 9;
       const v = -.66 + f * .54;
       const r = .34 * Math.pow(1 - f * .70, .90);
       push(.20 + r * .55, v, .03 + r * .85, '#ffffff');
     }
-    addStructuredLathe3D(26, .20, -.06, .16, .03, () => .088, 3, 4, () => '#ffffff');
-    addFilledGlassSphere3D(24, .20, .30, .03, .088, '#ffe5aa', '#ffffff', '#fbcfe8', false);
+    addStructuredLathe3D(20, .20, -.06, .16, .03, () => .088, 3, 4, () => '#ffffff');
+    addFilledGlassSphere3D(20, .20, .30, .03, .088, '#ffe5aa', '#ffffff', '#fbcfe8', false);
     // Flowing Veil with ribbon_wave motion
-    for (let i = 0; i < 22; i += 1) {
+    for (let i = 0; i < 16; i += 1) {
       const t = i / 21;
       const va = (t - .5) * 1.4;
       const v = .37 - t * .50;
@@ -3978,21 +3979,21 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
     ]);
   } else if (shapeId === 'wedding_cake') {
     // 3D 3-Tier Wedding Cake with Scalloped Wreath-style Garland Borders + Glossy 3D Heart Topper + 2 Helix Columns + 4 Corner Fireworks
-    addRing3D(32, 0, -.78, 0, .50, .50, 0, 0, 0, '#ffd15e');
+    addRing3D(24, 0, -.78, 0, .50, .50, 0, 0, 0, '#ffd15e');
     // Tier 1 (Base Tier): v from -.75 to -.44, radius = .44 + scalloped icing border
-    addStructuredLathe3D(88, 0, -.75, -.44, 0, () => .44, 4, 7, () => '#fffbeb');
-    for (let i = 0; i < 32; i += 1) {
-      const a = (i / 32) * Math.PI * 2;
+    addStructuredLathe3D(68, 0, -.75, -.44, 0, () => .44, 4, 6, () => '#fffbeb');
+    for (let i = 0; i < 24; i += 1) {
+      const a = (i / 24) * Math.PI * 2;
       push(Math.cos(a) * .45, -.44 + .022 * Math.sin(a * 8), Math.sin(a) * .45, i % 2 === 0 ? '#ffd15e' : '#ffffff');
     }
     // Tier 2 (Middle Tier): v from -.42 to -.12, radius = .31 + scalloped icing border
-    addStructuredLathe3D(76, 0, -.42, -.12, 0, () => .31, 4, 6, () => '#fbcfe8');
-    for (let i = 0; i < 26; i += 1) {
-      const a = (i / 26) * Math.PI * 2;
+    addStructuredLathe3D(56, 0, -.42, -.12, 0, () => .31, 4, 5, () => '#fbcfe8');
+    for (let i = 0; i < 20; i += 1) {
+      const a = (i / 20) * Math.PI * 2;
       push(Math.cos(a) * .32, -.26 + .02 * Math.cos(a * 6), Math.sin(a) * .32, '#f472b6');
     }
     // Tier 3 (Top Tier): v from -.10 to .16, radius = .20 + right-side white glaze glare
-    addStructuredLathe3D(52, 0, -.10, .16, 0, () => .20, 3, 5, () => '#fffbeb');
+    addStructuredLathe3D(42, 0, -.10, .16, 0, () => .20, 3, 5, () => '#fffbeb');
     for (let i = 0; i < 12; i += 1) {
       const f = i / 11;
       const v = -.70 + f * .82;
@@ -4082,12 +4083,12 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
     for (let level = 0; level < 4; level += 1) {
       const v0 = -.76 + level * .12;
       const half = .68 - level * .10;
-      addRectRing3D(42 - level * 4, 0, v0, 0, half, half, 0, 0, 0, level % 2 === 0 ? '#ffd15e' : '#cbd5e1');
-      addRectRing3D(34 - level * 4, 0, v0 + .055, 0, half - .035, half - .035, 0, 0, 0, '#f8fafc');
+      addRectRing3D(28 - level * 2, 0, v0, 0, half, half, 0, 0, 0, level % 2 === 0 ? '#ffd15e' : '#cbd5e1');
+      addRectRing3D(20 - level * 2, 0, v0 + .055, 0, half - .035, half - .035, 0, 0, 0, '#f8fafc');
     }
     const terraces = [{ r: .32, v: -.16, n: 10 }, { r: .24, v: -.02, n: 8 }, { r: .16, v: .12, n: 6 }];
     for (const terrace of terraces) {
-      addRing3D(28, 0, terrace.v - .03, 0, terrace.r + .03, terrace.r + .03, 0, 0, 0, '#94a3b8');
+      addRing3D(20, 0, terrace.v - .03, 0, terrace.r + .03, terrace.r + .03, 0, 0, 0, '#94a3b8');
       for (let s = 0; s < terrace.n; s += 1) {
         const a = (s / terrace.n) * Math.PI * 2;
         const su = Math.cos(a) * terrace.r, sw = Math.sin(a) * terrace.r;
@@ -4096,7 +4097,7 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
       }
     }
     // Stupa Induk (Main Bell Dome with White Glare Highlight + Harmika + Chattra Spire)
-    addStructuredLathe3D(58, 0, .18, .48, 0, t => .15 * Math.cos(t * Math.PI * .44), 4, 7, (t, a) => (Math.cos(a) > .5 && Math.sin(a) > 0) ? '#ffffff' : '#ffd15e');
+    addStructuredLathe3D(42, 0, .18, .48, 0, t => .15 * Math.cos(t * Math.PI * .44), 4, 6, (t, a) => (Math.cos(a) > .5 && Math.sin(a) > 0) ? '#ffffff' : '#ffd15e');
     addRectRing3D(12, 0, .51, 0, .05, .05, 0, 0, 0, '#ffffff');
     addStructuredLathe3D(20, 0, .54, .74, 0, t => .038 * (1 - t * .65), 4, 4, () => '#ffd15e');
     // 2 Rising Golden Nusantara Helix Columns + 4 Corner Satellite Lotus Spheres
@@ -4831,47 +4832,64 @@ function buildCatalog3DSceneDrones(shapeId, count, startColor, endColor) {
     addCornerFireworks3D('#52c7ff', '#ff5e97', .115);
   }
 
-  // Ensure exact count and map (u, v, w) -> 3D workspace coordinates (x, y, z) with 3D repulsive spacing relaxation
+  // Ensure exact count without bridging disconnected parts, then preserve crisp spacing
   const finalPts = [];
   if (pts.length >= count) {
     for (let i = 0; i < count; i += 1) {
-      const idx = Math.min(pts.length - 1, Math.floor(i * pts.length / count));
+      const idx = Math.min(pts.length - 1, Math.floor((i + .5) * pts.length / count));
       finalPts.push({ ...pts[idx] });
     }
   } else {
     for (const p of pts) finalPts.push({ ...p });
-    let idx = 0;
-    while (finalPts.length < count) {
-      const base = pts[idx % Math.max(1, pts.length)] || { u: 0, v: 0, w: 0, color: startColor };
-      const next = pts[(idx + 1) % Math.max(1, pts.length)] || base;
-      const pass = Math.floor(idx / Math.max(1, pts.length)) + 1;
-      const blend = .35 + (pass % 3) * .15;
-      const jitterA = idx * 2.39996;
-      const nu = Math.max(-.98, Math.min(.98, base.u + (next.u - base.u) * blend + Math.cos(jitterA) * .014 * pass));
-      const nv = Math.max(-.95, Math.min(.95, base.v + (next.v - base.v) * blend + Math.sin(jitterA) * .014 * pass));
-      const nw = Math.max(-.98, Math.min(.98, base.w + (next.w - base.w) * blend + Math.cos(jitterA * .7) * .02 * pass));
-      const du = nu - base.u, dv = nv - base.v, dw = nw - base.w;
+    // First fill along short continuous intra-part segments (never bridge unrelated parts)
+    const continuousEdges = [];
+    for (let i = 0; i < pts.length - 1; i += 1) {
+      const a = pts[i], b = pts[i + 1];
+      const dist = Math.hypot(b.u - a.u, b.v - a.v, b.w - a.w);
+      if (dist > .02 && dist < .16 && (a.part || '') === (b.part || '') && a.color === b.color) {
+        continuousEdges.push({ a, b, dist });
+      }
+    }
+    continuousEdges.sort((p, q) => q.dist - p.dist);
+    let edgeIdx = 0;
+    while (finalPts.length < count && edgeIdx < continuousEdges.length) {
+      const { a, b } = continuousEdges[edgeIdx];
+      const nu = (a.u + b.u) * .5;
+      const nv = (a.v + b.v) * .5;
+      const nw = (a.w + b.w) * .5;
       finalPts.push({
-        ...base,
+        ...a,
         u: nu,
         v: nv,
         w: nw,
-        lu: base.lu !== undefined ? base.lu + du : undefined,
-        lv: base.lv !== undefined ? base.lv + dv : undefined,
-        lw: base.lw !== undefined ? base.lw + dw : undefined,
-        color: base.color || startColor
+        lu: a.lu !== undefined && b.lu !== undefined ? (a.lu + b.lu) * .5 : undefined,
+        lv: a.lv !== undefined && b.lv !== undefined ? (a.lv + b.lv) * .5 : undefined,
+        lw: a.lw !== undefined && b.lw !== undefined ? (a.lw + b.lw) * .5 : undefined
+      });
+      edgeIdx += 1;
+    }
+    let idx = 0;
+    while (finalPts.length < count && pts.length > 0) {
+      const base = pts[idx % pts.length];
+      const pass = Math.floor(idx / pts.length) + 1;
+      const wOffset = (idx % 2 === 0 ? 1 : -1) * .028 * pass;
+      const nw = Math.max(-.96, Math.min(.96, base.w + wOffset));
+      finalPts.push({
+        ...base,
+        w: nw,
+        lw: base.lw !== undefined ? nw : undefined
       });
       idx += 1;
     }
   }
 
-  // Iterative 3D repulsive spacing relaxation enforcing static spacing > 1.5 m (target >= 1.62 m)
+  // Gentle 3D deduplication spacing keeping silhouettes and fine details crisp
   const cx = .5, cy = .47, scaleU = .38, scaleV = .38, scaleW = 15.2;
-  const minDistUVW = 1.62 / scaleW;
+  const minDistUVW = .024;
   const minDistSq = minDistUVW * minDistUVW;
-  for (let iter = 0; iter < 54; iter += 1) {
+  for (let iter = 0; iter < 24; iter += 1) {
     let maxOverlap = 0;
-    const pushFactor = iter < 32 ? .48 : .54;
+    const pushFactor = .32;
     for (let i = 0; i < finalPts.length; i += 1) {
       const p1 = finalPts[i];
       for (let j = i + 1; j < finalPts.length; j += 1) {
